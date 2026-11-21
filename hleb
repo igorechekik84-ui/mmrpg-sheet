@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marvel Multiverse RPG — Лист персонажа</title>
+<style>
+:root{--bg:#101114;--panel:#1b1d22;--panel2:#24272e;--line:#3a3e47;--text:#f3f3f3;--muted:#aeb3bd;--red:#e62429;--red2:#b8171d;--gold:#e4bd65;--green:#74c69d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(115deg,#8f1118,#e62429 55%,#9e1117);padding:22px max(18px,calc((100% - 1200px)/2));border-bottom:4px solid #650b10}
+header h1{margin:0;font-size:clamp(23px,4vw,34px);letter-spacing:.03em}header p{margin:5px 0 0;color:#ffe5e5}
+main{max-width:1200px;margin:20px auto;padding:0 16px 50px}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+button,.file-label{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:8px;font-weight:650;cursor:pointer}
+button:hover,.file-label:hover{border-color:var(--red)}button.primary{background:var(--red);border-color:var(--red)}button.danger{color:#ff9b9b}
+.status{margin-left:auto;color:var(--muted);align-self:center;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px;min-width:0}
+.span12{grid-column:span 12}.span8{grid-column:span 8}.span7{grid-column:span 7}.span6{grid-column:span 6}.span5{grid-column:span 5}.span4{grid-column:span 4}
+h2{font-size:17px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em;color:#fff;border-bottom:1px solid var(--line);padding-bottom:8px}
+h3{font-size:14px;margin:12px 0 7px;color:var(--gold)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}.fields.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
+input,select,textarea{width:100%;min-width:0;background:#111318;color:var(--text);border:1px solid #454a55;border-radius:7px;padding:9px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid #e6242980;border-color:var(--red)}
+input[type=number]{font-variant-numeric:tabular-nums}textarea{min-height:76px;resize:vertical}
+.metric{background:#111318;border:1px solid var(--line);border-radius:8px;padding:9px;text-align:center}
+.metric strong{display:block;font-size:23px;color:#fff;font-variant-numeric:tabular-nums}.metric small{color:var(--muted)}
+.stat-table{width:100%;border-collapse:collapse}.stat-table th,.stat-table td{padding:7px 5px;border-bottom:1px solid var(--line);text-align:center}.stat-table th{font-size:11px;color:var(--muted);font-weight:600}.stat-table td:first-child,.stat-table th:first-child{text-align:left}
+.stat-table input{padding:7px;text-align:center}.derived{font-weight:750;color:var(--gold)}
+.entry{border:1px solid var(--line);background:#15171c;border-radius:9px;padding:10px;margin:9px 0}.entry-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.entry-head b{color:var(--gold)}
+.entry-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.entry-grid .wide{grid-column:span 4}.entry-grid .half{grid-column:span 2}
+.entry button{padding:5px 9px;font-size:12px}
+.help{color:var(--muted);font-size:12px;margin:7px 0 0}
+.inline-check{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px}.inline-check input{width:auto}
+.current-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.damage-result{font-size:13px;color:var(--gold);padding-top:5px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:20px}
+@media(max-width:760px){.span8,.span7,.span6,.span5,.span4{grid-column:span 12}.fields.three,.fields.four{grid-template-columns:repeat(2,minmax(0,1fr))}.entry-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.entry-grid .wide{grid-column:span 2}.status{width:100%;margin:0}}
+@media print{body{background:#fff;color:#111}.card{break-inside:avoid;background:#fff;color:#111;border-color:#aaa}input,textarea,select{background:#fff;color:#111;border-color:#aaa}header{background:#fff;color:#111;border-bottom:2px solid #111}header p,.help,label,footer{color:#444}.toolbar{display:none}.metric{background:#fff}.metric strong{color:#111}h2{color:#111;border-color:#aaa}.entry{background:#fff}button{display:none}}
+</style>
+</head>
+<body>
+<header><h1>MARVEL MULTIVERSE RPG</h1><p>Лист персонажа · интерактивная версия</p></header>
+<main>
+<div class="toolbar">
+<button class="primary" id="newBtn">Новый персонаж</button>
+<button id="exportBtn">Экспорт листа (.json)</button>
+<label class="file-label" for="importFile">Импорт листа</label><input id="importFile" type="file" accept=".json,application/json" hidden>
+<button id="printBtn">Печать / PDF</button>
+<button class="danger" id="clearBtn">Очистить лист</button>
+<span class="status" id="saveStatus">Автосохранение включено</span>
+</div>
+<div class="grid">
+<section class="card span8">
+<h2>Персонаж</h2>
+<div class="fields three">
+<div><label>Кодовое имя</label><input data-save="codename" placeholder="Например, Spider-Man"></div>
+<div><label>Ранг</label><select data-save="rank"><option value="1">1 — Новичок</option><option value="2">2 — Опытный</option><option value="3" selected>3 — Герой</option><option value="4">4 — Чемпион</option><option value="5">5 — Легенда</option><option value="6">6 — Космический</option></select></div>
+<div><label>Команда</label><input data-save="team" placeholder="Название команды"></div>
+</div>
+</section>
+<section class="card span4">
+<h2>Ресурсы</h2>
+<div class="fields">
+<div class="metric"><small>Макс. здоровье</small><strong id="maxHealth">90</strong></div>
+<div class="metric"><small>Макс. фокус</small><strong id="maxFocus">90</strong></div>
+<div><label>Текущее здоровье</label><input type="number" min="0" data-save="currentHealth" id="currentHealth" value="90"></div>
+<div><label>Текущий фокус</label><input type="number" min="0" data-save="currentFocus" id="currentFocus" value="90"></div>
+<div><label>Снижение урона (здоровье)</label><input type="number" data-save="healthDR" value="0"></div>
+<div><label>Снижение урона (фокус)</label><input type="number" data-save="focusDR" value="0"></div>
+<div><label>Карма</label><input type="number" data-save="karma" id="karma" value="3"></div>
+<div><label>Инициатива</label><strong class="derived" id="initiative">+3</strong></div>
+</div>
+<p class="help">Максимумы рассчитываются по стойкости и бдительности. Текущие значения можно менять вручную.</p>
+</section>
+<section class="card span7">
+<h2>Характеристики и защита</h2>
+<table class="stat-table">
+<thead><tr><th>Характеристика</th><th>Значение</th><th>Защита</th><th>Проверки вне боя</th></tr></thead>
+<tbody id="statsBody"></tbody>
+</table>
+<p class="help">Защита автоматически равна 10 + значение характеристики. Бонусы от сил и черт можно вписать в поле бонуса защиты ниже.</p>
+<div class="fields three" style="margin-top:10px">
+<div><label>Бонус защиты: ближний бой</label><input type="number" data-save="defMelee" value="0"></div>
+<div><label>Бонус защиты: ловкость</label><input type="number" data-save="defAgility" value="0"></div>
+<div><label>Бонус защиты: стойкость</label><input type="number" data-save="defResilience" value="0"></div>
+<div><label>Бонус защиты: бдительность</label><input type="number" data-save="defVigilance" value="0"></div>
+<div><label>Бонус защиты: эго</label><input type="number" data-save="defEgo" value="0"></div>
+<div><label>Бонус защиты: логика</label><input type="number" data-save="defLogic" value="0"></div>
+</div>
+</section>
+<section class="card span5">
+<h2>Скорость</h2>
+<div class="fields three">
+<div><label>Размер</label><select data-save="size"><option>Крошечный</option><option>Маленький</option><option selected>Средний</option><option>Большой</option><option>Огромный</option><option>Гигантский</option></select></div>
+<div><label>Бег</label><input type="number" data-save="runSpeed" id="runSpeed" value="5"></div>
+<div><label>Лазание</label><input type="number" data-save="climbSpeed" value="0"></div>
+<div><label>Плавание</label><input type="number" data-save="swimSpeed" value="0"></div>
+</div>
+<p class="help">Базовый бег: 5 + 1 за каждые 5 очков ловкости. Значение можно переопределить вручную с учётом размера и особенностей персонажа.</p>
+<h3>Урон</h3>
+<div id="damageBox">
+<div class="fields three" style="margin:7px 0"><div><label>Ближний бой</label><strong id="dmgstat_Melee">3</strong></div><div><label>Бонус множителя</label><input type="number" data-save="dmg_Melee" value="0"></div><div><label>Формула урона</label><strong class="derived" id="dmgformula_Melee">dMarvel × 3 + 3</strong></div></div>
+<div class="fields three" style="margin:7px 0"><div><label>Ловкость</label><strong id="dmgstat_Agility">3</strong></div><div><label>Бонус множителя</label><input type="number" data-save="dmg_Agility" value="0"></div><div><label>Формула урона</label><strong class="derived" id="dmgformula_Agility">dMarvel × 3 + 3</strong></div></div>
+<div class="fields three" style="margin:7px 0"><div><label>Эго</label><strong id="dmgstat_Ego">0</strong></div><div><label>Бонус множителя</label><input type="number" data-save="dmg_Ego" value="0"></div><div><label>Формула урона</label><strong class="derived" id="dmgformula_Ego">dMarvel × 3 + 0</strong></div></div>
+<div class="fields three" style="margin:7px 0"><div><label>Логика</label><strong id="dmgstat_Logic">0</strong></div><div><label>Бонус множителя</label><input type="number" data-save="dmg_Logic" value="0"></div><div><label>Формула урона</label><strong class="derived" id="dmgformula_Logic">dMarvel × 3 + 0</strong></div></div>
+</div>
+<p class="help">Формула: результат Marvel die × множитель + характеристика. Введите бонус к множителю для соответствующего типа атаки.</p>
+</section>
+<section class="card span6">
+<h2>Личность и происхождение</h2>
+<div class="fields">
+<div><label>Настоящее имя</label><input data-save="realName"></div>
+<div><label>Профессия / занятие</label><input data-save="occupation"></div>
+<div><label>Рост</label><input data-save="height"></div>
+<div><label>Вес</label><input data-save="weight"></div>
+<div><label>Пол</label><input data-save="gender"></div>
+<div><label>Размер</label><input data-save="identitySize"></div>
+<div><label>Глаза</label><input data-save="eyes"></div>
+<div><label>Волосы</label><input data-save="hair"></div>
+<div><label>База</label><input data-save="base"></div>
+<div><label>Происхождение</label><input data-save="origin"></div>
+<div class="wide"><label>Отличительные особенности</label><textarea data-save="features"></textarea></div>
+</div>
+</section>
+<section class="card span6">
+<h2>Черты и метки</h2>
+<label>Черты (Traits)</label><textarea data-save="traits" placeholder="Записывайте черты персонажа..."></textarea>
+<label style="margin-top:10px">Метки (Tags)</label><textarea data-save="tags" placeholder="Записывайте метки персонажа..."></textarea>
+<label style="margin-top:10px">Заметки</label><textarea data-save="notes" placeholder="Любые дополнительные записи..."></textarea>
+</section>
+<section class="card span12">
+<div class="entry-head"><h2 style="margin:0;flex:1">Силы (Powers)</h2><button class="primary" id="addPower">+ Добавить силу</button></div>
+<div id="powersList"></div>
+</section>
+<section class="card span12">
+<div class="entry-head"><h2 style="margin:0;flex:1">Командный приём (Team Maneuver)</h2><button class="primary" id="addManeuver">+ Добавить приём</button></div>
+<div id="maneuversList"></div>
+</section>
+</div>
+<footer>Неофициальный вспомогательный цифровой лист. Marvel Multiverse Role-Playing Game © Marvel. Сохранение выполняется в браузере на этом устройстве.</footer>
+</main>
+<script>
+const statNames=[['Melee','Ближний бой'],['Agility','Ловкость'],['Resilience','Стойкость'],['Vigilance','Бдительность'],['Ego','Эго'],['Logic','Логика']];
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const storeKey='mmrpg_sheet_v1';
+let powers=[],maneuvers=[],loading=false;
+function num(v){let n=Number(v);return Number.isFinite(n)?n:0}
+function val(key){let el=document.querySelector(`[data-save="${key}"]`);return el?el.value:''}
+function setVal(key,v){let el=document.querySelector(`[data-save="${key}"]`);if(el)el.value=v??''}
+function rank(){return num(val('rank'))||1}
+function stat(k){return num(val('stat_'+k))}
+function buildStats(){
+ $('#statsBody').innerHTML=statNames.map(([k,n])=>`<tr><td>${n}</td><td><input type="number" data-save="stat_${k}" value="${k==='Melee'?3:k==='Agility'?3:k==='Resilience'?3:k==='Vigilance'?3:0}"></td><td class="derived" id="def_${k}">13</td><td><input type="text" data-save="check_${k}" placeholder="Бонус / примечание"></td></tr>`).join('');
+}
+function calc(){
+ const maxH=Math.max(10,stat('Resilience')*30),maxF=Math.max(10,stat('Vigilance')*30);
+ $('#maxHealth').textContent=maxH;$('#maxFocus').textContent=maxF;
+ if(!$('#currentHealth').dataset.touched)$('#currentHealth').value=maxH;
+ if(!$('#currentFocus').dataset.touched)$('#currentFocus').value=maxF;
+ $('#currentHealth').max=maxH;$('#currentFocus').max=maxF;
+ $('#initiative').textContent=(stat('Vigilance')>=0?'+':'')+stat('Vigilance');
+ if(!$('#karma').dataset.manual)$('#karma').value=rank();
+ statNames.forEach(([k])=>{let b=num(val('def'+k));$('#def_'+k).textContent=10+stat(k)+b});
+ const run=5+Math.floor(Math.max(0,stat('Agility'))/5);
+ if(!$('#runSpeed').dataset.manual)$('#runSpeed').value=run;
+ const r=rank();
+ ['Melee','Agility','Ego','Logic'].forEach(k=>{
+  $('#dmgstat_'+k).textContent=stat(k);
+  $('#dmgformula_'+k).textContent=`dMarvel × ${r+num(val('dmg_'+k))} + ${stat(k)}`;
+ });
+}
+function addEntry(container,obj,kind,index){
+ const isPower=kind==='power';
+ const fields=isPower?[
+ ['name','Название'],['set','Набор'],['cost','Стоимость'],['page','Страница'],['duration','Длительность'],['action','Действие'],['summary','Описание']
+ ]:[['name','Название приёма'],['type','Тип (атака / защита / rally)'],['level','Уровень'],['cost','Стоимость'],['summary','Описание']];
+ const div=document.createElement('div');div.className='entry';
+ div.innerHTML=`<div class="entry-head"><b>${isPower?'Сила':'Командный приём'} ${index+1}</b><button class="danger remove">Удалить</button></div><div class="entry-grid">${fields.map(([k,l])=>`<div class="${k==='summary'?'wide':(['duration','action','type'].includes(k)?'half':'')}"><label>${l}</label>${k==='summary'?`<textarea data-k="${k}"></textarea>`:`<input data-k="${k}" ${['cost','page','level'].includes(k)?'type="number"':''}>`}</div>`).join('')}</div>`;
+ fields.forEach(([k])=>div.querySelector(`[data-k="${k}"]`).value=obj[k]??'');
+ div.querySelector('.remove').onclick=()=>{(isPower?powers:maneuvers).splice(index,1);renderEntries();save()};
+ container.appendChild(div);
+}
+function renderEntries(){
+ $('#powersList').innerHTML='';powers.forEach((p,i)=>addEntry($('#powersList'),p,'power',i));
+ $('#maneuversList').innerHTML='';maneuvers.forEach((p,i)=>addEntry($('#maneuversList'),p,'maneuver',i));
+}
+function collectEntries(container){return [...$(container).querySelectorAll('.entry')].map(e=>Object.fromEntries([...e.querySelectorAll('[data-k]')].map(x=>[x.dataset.k,x.value])))}
+function gather(){
+ let data={fields:{},powers:collectEntries('#powersList'),maneuvers:collectEntries('#maneuversList')};
+ $$('[data-save]').forEach(e=>data.fields[e.dataset.save]=e.value);
+ return data;
+}
+function save(){
+ if(loading)return;
+ try{localStorage.setItem(storeKey,JSON.stringify(gather()));$('#saveStatus').textContent='Сохранено в этом браузере';}catch(e){$('#saveStatus').textContent='Не удалось сохранить автоматически';}
+}
+function load(data, markTouched=true){
+ loading=true;
+ if(data?.fields)Object.entries(data.fields).forEach(([k,v])=>setVal(k,v));
+ powers=Array.isArray(data?.powers)?data.powers:[];
+ maneuvers=Array.isArray(data?.maneuvers)?data.maneuvers:[];
+ $('#currentHealth').dataset.touched='1';$('#currentFocus').dataset.touched='1';
+ if(data?.fields?.runSpeed!==undefined)$('#runSpeed').dataset.manual='1';
+ renderEntries();calc();loading=false;save();
+}
+function fresh(){
+ if(!confirm('Создать новый лист? Текущие данные будут заменены.'))return;
+ localStorage.removeItem(storeKey);location.reload();
+}
+buildStats();
+const initial={fields:{rank:3,karma:3,stat_Melee:3,stat_Agility:3,stat_Resilience:3,stat_Vigilance:3,stat_Ego:0,stat_Logic:0,currentHealth:90,currentFocus:90}};
+try{let saved=JSON.parse(localStorage.getItem(storeKey));if(saved)load(saved);else load(initial,false)}catch(e){load(initial,false)}
+document.addEventListener('input',e=>{
+ if(e.target.matches('[data-save]')){
+  if(e.target.id==='currentHealth')e.target.dataset.touched='1';
+  if(e.target.id==='currentFocus')e.target.dataset.touched='1';
+  if(e.target.id==='runSpeed')e.target.dataset.manual='1';
+  if(e.target.id==='karma')e.target.dataset.manual='1';
+  if(['stat_Resilience','stat_Vigilance'].includes(e.target.dataset.save)){
+   // Keep current resource values unless they were untouched.
+   if(e.target.dataset.save==='stat_Resilience'&&!$('#currentHealth').dataset.touched)$('#currentHealth').value=Math.max(10,stat('Resilience')*30);
+   if(e.target.dataset.save==='stat_Vigilance'&&!$('#currentFocus').dataset.touched)$('#currentFocus').value=Math.max(10,stat('Vigilance')*30);
+  }
+  calc();save();
+ }
+});
+document.addEventListener('change',e=>{if(e.target.matches('[data-save]')){calc();save()}});
+document.addEventListener('input',e=>{if(e.target.matches('[data-k]'))save()});
+$('#addPower').onclick=()=>{powers=collectEntries('#powersList');powers.push({});renderEntries();save()};
+$('#addManeuver').onclick=()=>{maneuvers=collectEntries('#maneuversList');maneuvers.push({});renderEntries();save()};
+$('#newBtn').onclick=fresh;
+$('#clearBtn').onclick=()=>{if(confirm('Полностью очистить этот лист?')){localStorage.removeItem(storeKey);location.reload()}};
+$('#printBtn').onclick=()=>window.print();
+$('#exportBtn').onclick=()=>{
+ const blob=new Blob([JSON.stringify(gather(),null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(val('codename')||'mmrpg-character').replace(/[^\wа-яё-]/gi,'_')+'.json';a.click();URL.revokeObjectURL(a.href);
+};
+$('#importFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{const d=JSON.parse(await f.text());if(!d.fields)throw Error();load(d);alert('Лист импортирован.');}
+ catch(err){alert('Не удалось прочитать файл. Проверьте, что это экспорт листа MMRPG.');}
+ e.target.value='';
+};
+</script>
+</body></html>
